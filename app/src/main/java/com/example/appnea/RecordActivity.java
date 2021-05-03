@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import com.example.appnea.R;
 import android.widget.CompoundButton;
 
 public class RecordActivity extends AppCompatActivity {
@@ -42,7 +43,7 @@ public class RecordActivity extends AppCompatActivity {
 
     private void readData()
     {
-        mediaPlayer = MediaPlayer.create(getBaseContext(), R.raw.addi_osa_10);
+        //mediaPlayer = MediaPlayer.create(getBaseContext(), R.raw.addi_osa_10);
     }
 
 
