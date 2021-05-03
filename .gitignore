@@ -18,4 +18,5 @@ local.properties
 /7Projekt
 /Sleep-Tracker-2
 /SleepAdviser
-/app
+
+app/src/main/res/raw/addi_osa_10.wav
