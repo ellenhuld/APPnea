@@ -39,8 +39,7 @@ public class ResultListAdaptor extends RecyclerView.Adapter<ResultListAdaptor.Vi
     public void onBindViewHolder(@NonNull ViewHolderList holder, int position) {
         resultItem = resultItems.get(position);
         holder.recording_name.setText(resultItem.getVideoName());
-        holder.recording_date.setText(resultItem.getDate().toString());
-        holder.recording_length.setText(String.valueOf(resultItem.getLength()));
+        holder.recording_length.setText("Duration: "+String.valueOf(resultItem.getLength())+" seconds");
     }
 
     @Override
@@ -60,13 +59,12 @@ public class ResultListAdaptor extends RecyclerView.Adapter<ResultListAdaptor.Vi
     public class ViewHolderList extends RecyclerView.ViewHolder{
         public TextView recording_name;
         public TextView recording_length;
-        public TextView recording_date;
+
 
         public ViewHolderList(@NonNull View itemView,final OnItemClickListener listener) {
             super(itemView);
             recording_name = itemView.findViewById(R.id.recording_name);
             recording_length = itemView.findViewById(R.id.recording_length);
-            recording_date = itemView.findViewById(R.id.recording_date);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -20,7 +20,7 @@
             android:layout_marginBottom="20dp"
             android:text="TextView"
             app:layout_constraintBottom_toTopOf="@+id/recording_length"
-            app:layout_constraintEnd_toStartOf="@+id/recording_date"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,19 +31,9 @@
 
             android:text="TextView"
             app:layout_constraintBottom_toTopOf="@+id/Divider"
-            app:layout_constraintEnd_toStartOf="@+id/recording_date"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/recording_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
-            android:text="TextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/Divider"

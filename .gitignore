@@ -21,3 +21,4 @@ local.properties
 
 app/src/main/res/raw/addi_osa_10.wav
 *.m4a
+*.wav

@@ -1,19 +1,27 @@
 package com.example.appnea;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.example.adaptors.ResultListAdaptor;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static android.media.MediaMetadataRetriever.METADATA_KEY_DURATION;
 
 public class ResultsActivity extends AppCompatActivity {
     private static ResultListAdaptor Adapter;
@@ -21,24 +29,32 @@ public class ResultsActivity extends AppCompatActivity {
     public ArrayList<ResultItem> items = new ArrayList<>();
 //    public AudioManager audioManager;
     public MediaPlayer mediaPlayer;
+    public MediaMetadataRetriever metadataRetriever;
+    private File[] allFiles;
 
-
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
         mediaPlayer = MediaPlayer.create(this,R.raw.addi_osa_10);
+        metadataRetriever = new MediaMetadataRetriever();
         Populatelist();
         setupRecyclerview();
     }
 
     private void Populatelist() {
-        ResultItem item = new ResultItem(new Date(),120,"myvideo");
-        for (int i=0; i<15;i++){
-            items.add(item);
+        String path = getExternalFilesDir("/").getAbsolutePath();
+        File directory = new File(path);
+        allFiles = directory.listFiles();
+
+        for (File file : allFiles) {
+            metadataRetriever.setDataSource(file.getAbsolutePath());
+            String duration = metadataRetriever.extractMetadata(METADATA_KEY_DURATION);
+            ResultItem item2 = new ResultItem(Integer.parseInt(duration)/1000,file.getName());
+            items.add(item2);
         }
-        MediaPlayer.TrackInfo[] info = mediaPlayer.getTrackInfo();
-        Log.d("Track info", "Populatelist: "+info);
+
     }
 
     private void setupRecyclerview() {
