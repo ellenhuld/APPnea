@@ -21,28 +21,12 @@
         android:orientation="vertical"
         tools:ignore="UnknownId">
 
-        <TextView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/RecyclerResultView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:text="No data found"
-            android:gravity="center_horizontal" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="154dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/logo_dormie_sick" />
-
+            android:layout_height="match_parent"
+            tools:listitem="@layout/result_item" />
     </LinearLayout>
-
-    <ListView
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/emptyData"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/listSession"/>
 
 </RelativeLayout>
 
