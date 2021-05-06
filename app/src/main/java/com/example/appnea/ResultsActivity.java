@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.media.MediaMetadataRetriever;
@@ -32,7 +33,6 @@ public class ResultsActivity extends AppCompatActivity {
     public MediaMetadataRetriever metadataRetriever;
     private File[] allFiles;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +41,15 @@ public class ResultsActivity extends AppCompatActivity {
         metadataRetriever = new MediaMetadataRetriever();
         Populatelist();
         setupRecyclerview();
+        Adapter.setOnItemClickListener(new ResultListAdaptor.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+               Intent intent = new Intent(ResultsActivity.this,DetailedStat.class);
+               intent.putExtra("recordName",allFiles[position].getName());
+               intent.putExtra("recordPath",allFiles[position].getAbsolutePath());
+               startActivity(intent);
+            }
+        });
     }
 
     private void Populatelist() {
@@ -67,6 +76,8 @@ public class ResultsActivity extends AppCompatActivity {
         recyclerView.setAdapter(Adapter);
         Adapter.notifyDataSetChanged();
     }
+
+
 /*   % Importing audio
 [y,Fs] = audioread('Andrea_normal_1.m4a');
 
