@@ -20,7 +20,7 @@ public class RecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
-        btnTest = findViewById(R.id.button_record);
+        btnTest = findViewById(R.id.button_test);
 
         //toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
