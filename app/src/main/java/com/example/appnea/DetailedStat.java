@@ -3,6 +3,8 @@ package com.example.appnea;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaCodec;
+import android.media.MediaFormat;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -18,6 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.util.Dictionary;
+import java.util.List;
 
 public class DetailedStat extends AppCompatActivity {
 String name;
@@ -35,24 +40,54 @@ TextView pathview;
         pathview = findViewById(R.id.PATH);
         nameview.setText(name);
         pathview.setText(path);
+        File audiofile = new File(path);
+        double[] signal = new double[0];
+        try {
+            String mMime = "audio/3gpp";
+            MediaCodec codec = MediaCodec.createDecoderByType(mMime);
+            MediaFormat mMediaFormat = new MediaFormat();
+            mMediaFormat = MediaFormat.createAudioFormat(mMime,
+                    mMediaFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE),
+                    mMediaFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT));
 
+            codec.configure(mMediaFormat, null, null, 0);
+            codec.start();
 
+            MediaCodec.BufferInfo buf_info = new MediaCodec.BufferInfo();
+            int outputBufferIndex = codec.dequeueOutputBuffer(buf_info, 0);
+            byte[] pcm = new byte[buf_info.size];
 
-        try{
-            InputStream ins = getResources().openRawResource(
-                    getResources().getIdentifier("addi_osa_10",
-                            "raw", getPackageName()));
-            File tempFile = File.createTempFile("pre", "suf");
-            copyFile(ins, new FileOutputStream(tempFile));
+            ByteBuffer[] mOutputBuffers = new ByteBuffer[buf_info.size];
+            mOutputBuffers[outputBufferIndex].get(pcm, 0, buf_info.size);
 
-            Log.d("NOPE", "onCreate: HOLY SHIT!"+tempFile.exists());
-            // Now some_file is tempFile .. do what you like
+            signal = toDoubleArray(pcm);
         } catch (IOException e) {
-            throw new RuntimeException("Can't create temp file ", e);
+            e.printStackTrace();
         }
+        Log.d("AUDIO", "onCreate: AUDIO FILE EXIST?"+audiofile.exists());
+//        try{
+//            InputStream ins = getResources().openRawResource(
+//                    getResources().getIdentifier("addi_osa_10",
+//                            "raw", getPackageName()));
+//            File tempFile = File.createTempFile("pre", "suf");
+//            copyFile(ins, new FileOutputStream(tempFile));
+//
+//            Log.d("NOPE", "onCreate: HOLY SHIT!"+tempFile.exists());
+//            // Now some_file is tempFile .. do what you like
+//        } catch (IOException e) {
+//            throw new RuntimeException("Can't create temp file ", e);
+//        }
 
 
-//        proccessSignal();
+        proccessSignal(signal);
+    }
+    public static double[] toDoubleArray(byte[] byteArray){
+        int times = Double.SIZE / Byte.SIZE;
+        double[] doubles = new double[byteArray.length / times];
+        for(int i=0;i<doubles.length;i++){
+            doubles[i] = ByteBuffer.wrap(byteArray, i*times, times).getDouble();
+        }
+        return doubles;
     }
     private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
@@ -61,10 +96,10 @@ TextView pathview;
             out.write(buffer, 0, read);
         }
     }
-    private void proccessSignal(){
+    private void proccessSignal(double[] signalIN){
 
         double samplefreq = 44100;
-        double[] signal = null;
+        double[] signal = signalIN;
         Bessel bandpassfilter = new Bessel(signal,samplefreq);
         double[] filteredSignal = bandpassfilter.lowPassFilter(1,150);
         Bessel newsignalfiltered = new Bessel(filteredSignal,samplefreq);
