@@ -29,6 +29,7 @@ String name;
 String path;
 TextView nameview;
 TextView pathview;
+TextView apneaview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +39,10 @@ TextView pathview;
         path = receivedFromList.getStringExtra("recordPath");
         nameview = findViewById(R.id.NAME);
         pathview = findViewById(R.id.PATH);
+        apneaview = findViewById(R.id.APNEA);
         nameview.setText(name);
         pathview.setText(path);
+        apneaview.setText("INITIALISING");
         File audiofile = new File(path);
         double[] signal = new double[0];
         try {
@@ -52,7 +55,6 @@ TextView pathview;
 
             codec.configure(mMediaFormat, null, null, 0);
             codec.start();
-
             MediaCodec.BufferInfo buf_info = new MediaCodec.BufferInfo();
             int outputBufferIndex = codec.dequeueOutputBuffer(buf_info, 0);
             byte[] pcm = new byte[buf_info.size];
@@ -79,7 +81,7 @@ TextView pathview;
 //        }
 
 
-        proccessSignal(signal);
+//        proccessSignal(signal);
     }
     public static double[] toDoubleArray(byte[] byteArray){
         int times = Double.SIZE / Byte.SIZE;
@@ -113,7 +115,30 @@ TextView pathview;
         h.hilbertTransform();
         double[][] analytical_signal = h.getOutput();
         Log.d("Endsignal", "proccessSignal: "+analytical_signal);
-//        double len = 1*samplefreq;
+
+
+        double threshold = 0.0052;
+        int apneaCount = 0;
+
+        for (int i=0; i<=analytical_signal.length;i++)
+        {
+            for (int j=0; j<=analytical_signal.length;j++){
+                if (threshold<=analytical_signal[i][j]){
+
+                }else {
+                    apneaCount++;
+                    if (apneaCount>=10){
+                        apneaview.setText("YOU HAVE APNEA");
+                        break;
+                    }
+                }
+            }
+
+        }
+        if (apneaCount < 10){
+            apneaview.setText("YOU DO NOT HAVE APNEA");
+        }
+        //        double len = 1*samplefreq;
 //        int intlen = (int)len;
 //        Hamming w1 = new Hamming(intlen); // For symmetric
 //        double[] out = w1.getWindow();
